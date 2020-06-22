@@ -1,5 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
+import idGenerator from '@radex171/randomid-generator';
 
 class App extends React.Component {
   
@@ -10,9 +11,9 @@ class App extends React.Component {
 
   componentDidMount(){
     this.socket = io('http://localhost:8000');
-    this.socket.on('addTask', (task) => this.addTask(task.name));
+    this.socket.on('addTask', (task) => this.addTask(task));
     this.socket.on('removeTask', (task) => this.removeTask(task.id, !task.bool));
-    this.socket.on('updateData', (task) => this.updateTask(task));
+    this.socket.on('updateData', (task) => this.updateTask( task));
   }
 
   removeTask(id, taskForDel){
@@ -31,19 +32,21 @@ class App extends React.Component {
   }
   submitForm = event =>{
     event.preventDefault();
-    this.addTask(this.state.taskName);
-    this.socket.emit('addTask', this.state.taskName);
+    const idGen =idGenerator(10);
+    this.addTask({id: idGen, name:this.state.taskName});
+    this.socket.emit('addTask',{id:idGen, name:this.state.taskName});
   }
 
   addTask = taskAll =>{
     const{tasks} = this.state;
     const newArrayTasks = [...tasks];
-    newArrayTasks.push({id: newArrayTasks.length + 1, name: taskAll});
+    newArrayTasks.push({id: taskAll.id, name: taskAll.name});
     this.setState({tasks: newArrayTasks});
   }
 
   updateTasks = (allTasks) => {
-    this.setState({tasks: allTasks})
+    this.setState({tasks: allTasks});
+    console.log(this.state.tasks);
   }
 
   render() {

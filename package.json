@@ -5,8 +5,15 @@
   "repository": "git@github.com:radex171/ToDo-Websocket.git",
   "author": "<radex171@gmail.com>",
   "license": "MIT",
-  "start": "nodemon server.js",
+
+  "scripts":{
+  "start": "npm-run-all -p start:*",
+  "start:server": "nodemon server.js",
+  "start:client" :"cd client && yarn start"
+},
+
   "dependencies": {
+    "@radex171/randomid-generator": "^1.0.1",
     "express": "^4.17.1",
     "nodemon": "^2.0.4",
     "socket.io": "^2.3.0"
